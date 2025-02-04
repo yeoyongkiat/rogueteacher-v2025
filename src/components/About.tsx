@@ -1,32 +1,58 @@
 import { useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, PanInfo } from "framer-motion";
 import { fadeInUp, fadeIn, scaleIn } from "../utils/animations";
 import { wrap } from "popmotion";
 
 const cards = [
   {
     title: "Pedagogy",
-    description: "Creating engaging learning experiences and breaking down complex concepts"
+    description: "Creating engaging learning experiences and breaking down complex concepts",
+    designation: "Physics Teacher",
+    organisation: "Ministry of Education, Juying Secondary School",
+    duration: "2014 - 2016",
+    contributions: "Taught middle-school Physics and supported students from low-income families through enrichment programs and career guidance workshops"
   },
   {
     title: "Data Analysis",
-    description: "Turning raw data into actionable insights and the art of storytelling"
+    description: "Turning raw data into actionable insights and the art of storytelling",
+    designation: "Senior Communications Planning Officer",
+    organisation: "Ministry of Education, Communications & Engagement Group",
+    duration: "2017 - 2018",
+    contributions: "Led a team to establish a data analytics office and develop a three-year data transformation roadmap, creating business intelligence tools for Senior Management and training programs to enhance officer capabilities"
   },
   {
-    title: "Public Service",
-    description: "Stakeholder engagement, navigating complex systems, and crafting solutions that work for everyone"
+    title: "Healthcare Finance Policy",
+    description: "Stakeholder engagement, public comms, navigating complex systems, and crafting policy solutions that work for everyone",
+    designation: "Assistant Director (Subvention)",
+    organisation: "Ministry of Health, Healthcare Finance",
+    duration: "2019 - 2022",
+    contributions: "Reviewed the national healthcare subsidy framework, ensuring affordable Long Term Care (LTC) services for over 700,000 senior citizens and individuals with disabilities"
   },
   {
     title: "Product Management",
-    description: "Working with UXDs and software engineers on user-centric solutions through constant iteration"
+    description: "Working with UXDs and software engineers on user-centric solutions through constant iteration",
+    designation: "Deputy Director (Policy, Strategy & Design)",
+    organisation: "GovTech, Government Digital Services",
+    duration: "2022 - 2025",
+    contributions: "Pioneered Generative AI applications across the public service, set up an innovation unit TransformGovSG (https://transform.gov.sg) to transform the way agencies make use of data and information"
+  },
+  {
+    title: "Organisation Design",
+    description: "Working with the senior leadership to create product organisations that are aligned with the government's digital transformation agenda",
+    designation: "Senior Deputy Director (Product Plans & Partnership)",
+    organisation: "Ministry of Education, Information Technology Division",
+    duration: "2025 - present",
+    contributions: "Setting up an innovation unit of software engineers and UX designers to review its IT landscape and develop bespoke digital products for MOE policy officers and educators"
   },
   {
     title: "Reading List",
-    description: "Books and articles that have shaped my thinking and approach to work"
+    description: "Currently reading...",
+    books: ["Oversubscribed, Daniel Priestley"]
   },
   {
     title: "Professional Certifications",
-    description: "Continuous learning through formal education and certifications"
+    description: "Currently pursuing...",
+    certification: ["Master of Public Affairs, UC Berkeley"]
   }
 ];
 
@@ -87,13 +113,13 @@ export default function About() {
           <div className="mt-24">
             <div className="flex flex-col md:flex-row gap-8 items-start">
               <div className="md:w-1/3">
-                <h3 className="text-2xl md:text-3xl font-semibold mb-4">
-                  My Resumé
-                </h3>
                 <p className="text-sm md:text-base opacity-90 mb-4">
                   I spent my public service career at the intersection of education, healthcare and technology.
                 </p>
-                <button 
+                <a 
+                  href="/documents/resume-v2025.pdf"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="inline-flex items-center gap-2 bg-black text-white px-4 py-2 rounded-lg hover:bg-black/90 transition-colors text-sm font-medium"
                 >
                   Resumé
@@ -106,7 +132,7 @@ export default function About() {
                   >
                     <path d="M5 12h14M12 5l7 7-7 7" />
                   </svg>
-                </button>
+                </a>
               </div>
 
               {/* Cards Carousel */}
@@ -126,38 +152,75 @@ export default function About() {
 
                 <AnimatePresence initial={false} custom={direction}>
                   <motion.div
-                    key={page}
+                    key={cardIndex}
                     custom={direction}
                     variants={variants}
                     initial="enter"
                     animate="center"
                     exit="exit"
-                    transition={{
-                      x: { type: "spring", stiffness: 300, damping: 30 },
-                      opacity: { duration: 0.2 }
-                    }}
                     drag="x"
                     dragConstraints={{ left: 0, right: 0 }}
                     dragElastic={1}
                     onDragEnd={(e, { offset, velocity }) => {
                       const swipe = swipePower(offset.x, velocity.x);
+
                       if (swipe < -swipeConfidenceThreshold) {
                         paginate(1);
                       } else if (swipe > swipeConfidenceThreshold) {
                         paginate(-1);
                       }
                     }}
-                    className="absolute w-full"
+                    transition={{
+                      x: { type: "spring", stiffness: 300, damping: 30 },
+                      opacity: { duration: 0.2 }
+                    }}
+                    className="absolute w-full h-full cursor-grab active:cursor-grabbing"
                   >
-                    <div className="relative bg-white rounded-2xl p-8 md:p-12 text-gray-800 shadow-lg hover:shadow-xl transition-shadow">
-                      {/* Card Content */}
-                      <h4 className="flex items-center text-xl mb-6 font-semibold">
-                        {cards[cardIndex].title}
-                      </h4>
-                      <div className="h-px bg-neutral-200 w-full mb-8" />
-                      <p className="text-sm text-gray-600 leading-relaxed">
-                        {cards[cardIndex].description}
-                      </p>
+                    <div className="bg-white rounded-2xl shadow-lg p-8 h-full">
+                      <h3 className="text-xl font-semibold mb-2">{cards[cardIndex].title}</h3>
+                      <p className="text-neutral-600 mb-4">{cards[cardIndex].description}</p>
+                      <hr />
+                      
+                      {/* Show designation and contributions if they exist */}
+                      {cards[cardIndex].designation && (
+                        <div className="space-y-4 mt-4">
+                          <div>
+                            <h4 className="font-semibold text-[rgb(43,154,154)]">{cards[cardIndex].designation}</h4>
+                            <p className="text-sm text-neutral-600">{cards[cardIndex].organisation}</p>
+                            <p className="text-sm text-neutral-500">{cards[cardIndex].duration}</p>
+                          </div>
+                          
+                          {cards[cardIndex].contributions && (
+                            <div>
+                              <p className="text-sm text-neutral-600">{cards[cardIndex].contributions}</p>
+                            </div>
+                          )}
+                        </div>
+                      )}
+
+                      {/* Show books if they exist */}
+                      {cards[cardIndex].books && (
+                        <div className="space-y-2 mt-4">
+                          {cards[cardIndex].books.map((book, index) => (
+                            <div key={index} className="flex items-center gap-2">
+                              <span className="text-[rgb(43,154,154)]">📚</span>
+                              <p className="text-sm text-neutral-600">{book}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+
+                      {/* Show certifications if they exist */}
+                      {cards[cardIndex].certification && (
+                        <div className="space-y-2 mt-4">
+                          {cards[cardIndex].certification.map((cert, index) => (
+                            <div key={index} className="flex items-center gap-2">
+                              <span className="text-[rgb(43,154,154)]">🎓</span>
+                              <p className="text-sm text-neutral-600">{cert}</p>
+                            </div>
+                          ))}
+                        </div>
+                      )}
                     </div>
                   </motion.div>
                 </AnimatePresence>

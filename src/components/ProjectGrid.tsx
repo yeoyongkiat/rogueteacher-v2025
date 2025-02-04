@@ -67,7 +67,7 @@ export default function ProjectGrid({ projects }: ProjectGridProps) {
                project.link.includes('tableau.com') ? 'View dashboard →' : 
                project.link.includes('govinsider.asia') ? 'View article →' : 
                project.link.includes('linkedin.com') ? 'View post →' : 
-               'View website →'}
+               'View link →'}
             </a>
           )}
         </motion.div>

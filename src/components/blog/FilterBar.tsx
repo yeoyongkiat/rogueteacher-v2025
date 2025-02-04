@@ -33,7 +33,7 @@ export function FilterBar({
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-neutral-500" />
         <Input
           type="text"
-          placeholder="Search posts..."
+          placeholder="Search posts, categories & tags..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           className="pl-10"
