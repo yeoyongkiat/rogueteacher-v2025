@@ -10,10 +10,12 @@ export type BlogPost = {
   content?: React.ReactNode;
   link?: string;
   isOldArticle?: boolean;
+  id: string;
 }
 
 export const blogPosts: BlogPost[] = [
   {
+    id: "1",
     title: "The Future of Education: AI as a Teaching Assistant",
     slug: "future-of-education-ai-teaching-assistant",
     date: "March 15, 2024",
@@ -40,6 +42,7 @@ export const blogPosts: BlogPost[] = [
     ])
   },
   {
+    id: "2",
     title: "Building Trust in Government Digital Services",
     date: "March 1, 2024",
     category: "Public Service",
@@ -48,6 +51,7 @@ export const blogPosts: BlogPost[] = [
     link: "#"
   },
   {
+    id: "3",
     title: "Democratizing Healthcare with AI",
     date: "April 1, 2024",
     category: "HealthTech",
@@ -57,6 +61,7 @@ export const blogPosts: BlogPost[] = [
     isOldArticle: true
   },
   {
+    id: "4",
     title: "Teaching Chemistry with Minecraft",
     date: "March 30, 2024",
     category: "EdTech",
@@ -65,6 +70,7 @@ export const blogPosts: BlogPost[] = [
     link: "#"
   },
   {
+    id: "5",
     title: "The Power of Public-Private Partnerships",
     date: "March 25, 2024",
     category: "Public Service",
@@ -73,6 +79,7 @@ export const blogPosts: BlogPost[] = [
     link: "#"
   },
   {
+    id: "6",
     title: "Building Trust in AI Systems",
     date: "March 20, 2024",
     category: "Technology",

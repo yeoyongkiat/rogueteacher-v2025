@@ -1,3 +1,5 @@
+import rogueTeacherIcon from "/images/rogueteacher-icon.png";
+
 import { 
   Github, 
   Linkedin, 
@@ -14,11 +16,15 @@ export default function Footer() {
       <div className="container mx-auto px-4">
         <div className="flex flex-col items-center">
           {/* Logo */}
-          <div className="mb-8">
-            <a href="#" className="text-xl font-medium flex items-center text-white">
-              <span>ROGUETEACHER</span>
-            </a>
-          </div>
+          <div className="text-xl font-medium flex items-center text-white mb-8">
+          <span className="mr-[-2px]">R</span>
+            <img 
+              src={rogueTeacherIcon} 
+              alt="o" 
+              className="w-6 h-6 object-contain mx-[-2px]" 
+            />
+            <span className="ml-[-2px]">GUETEACHER</span>
+            </div>
 
           {/* Social Links */}
           <div className="flex gap-6 mb-8">
@@ -67,7 +73,7 @@ export default function Footer() {
             <a href="#about" className="text-white/80 hover:text-white transition-colors">About</a>
             <a href="#projects" className="text-white/80 hover:text-white transition-colors">Projects</a>
             <a href="#blog" className="text-white/80 hover:text-white transition-colors">Blog</a>
-            <a href="#apps" className="text-white/80 hover:text-white transition-colors">Apps</a>
+            <a href="#Portfolio" className="text-white/80 hover:text-white transition-colors">Portfolio</a>
           </div>
 
           {/* Copyright */}

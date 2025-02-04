@@ -1,6 +1,7 @@
 import * as React from "react"
 import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
+import { ArrowRight, ArrowLeft } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -37,17 +38,28 @@ export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
+  icon?: 'right' | 'left' | 'none'
+  children: React.ReactNode
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, asChild = false, ...props }, ref) => {
+  ({ className, variant, size, asChild = false, icon = 'none', children, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
+    const Arrow = icon === 'right' ? ArrowRight : ArrowLeft
+
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(
+          buttonVariants({ variant, size, className }),
+          "inline-flex items-center gap-2"
+        )}
         ref={ref}
         {...props}
-      />
+      >
+        {icon === 'left' && <Arrow className="w-4 h-4" />}
+        {children}
+        {icon === 'right' && <Arrow className="w-4 h-4" />}
+      </Comp>
     )
   }
 )

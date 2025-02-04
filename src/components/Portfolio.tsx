@@ -104,11 +104,11 @@ const apps: App[] = [
   }
 ];
 
-export default function Apps() {
+export default function Portfolio() {
   const [hoveredApp, setHoveredApp] = useState<number | null>(null);
 
   return (
-    <section id="apps" className="section-padding bg-[#f6f6f6] pb-0">
+    <section id="portfolio" className="section-padding bg-[#f6f6f6] pb-0">
       <div className="container mx-auto">
         <div className="flex flex-col md:flex-row gap-8">
           {/* Header Card - Left Side */}

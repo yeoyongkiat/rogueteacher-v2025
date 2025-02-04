@@ -1,6 +1,5 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-
 import { cn } from "@/lib/utils"
 
 const badgeVariants = cva(
@@ -23,14 +22,43 @@ const badgeVariants = cva(
   }
 )
 
-export interface BadgeProps
-  extends React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof badgeVariants> {}
-
-function Badge({ className, variant, ...props }: BadgeProps) {
-  return (
-    <div className={cn(badgeVariants({ variant }), className)} {...props} />
-  )
+export interface BadgeProps extends React.HTMLAttributes<HTMLDivElement> {
+  variant?: 'default' | 'outline';
+  color?: 'primary' | 'neutral';
 }
 
-export { Badge, badgeVariants }
+export function Badge({ 
+  children, 
+  variant = 'default', 
+  color = 'primary',
+  className,
+  ...props 
+}: BadgeProps) {
+  const baseStyles = "inline-block px-3 py-1.5 rounded-full text-xs font-medium";
+  const variants = {
+    default: {
+      primary: "bg-[rgb(217,233,233)] text-[rgb(43,154,154)]",
+      neutral: "bg-neutral-100 text-neutral-600"
+    },
+    outline: {
+      primary: "border border-[rgb(43,154,154)] text-[rgb(43,154,154)]",
+      neutral: "border border-neutral-200 text-neutral-600"
+    }
+  };
+
+  return (
+    <div 
+      className={cn(
+        baseStyles, 
+        variants[variant][color], 
+        className
+      )} 
+      {...props}
+    >
+      {children}
+    </div>
+  );
+}
+
+// Only export the variants, not Badge again
+export { badgeVariants }

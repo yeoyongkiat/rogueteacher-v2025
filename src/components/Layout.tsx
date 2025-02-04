@@ -1,11 +1,10 @@
-import { ReactNode } from "react";
 import Navigation from "./Navigation";
 
-export default function Layout({ children }: { children: ReactNode }) {
+export default function Layout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-[#f6f6f6]">
       <Navigation />
-      <main className="relative">{children}</main>
+      <main>{children}</main>
     </div>
   );
 }

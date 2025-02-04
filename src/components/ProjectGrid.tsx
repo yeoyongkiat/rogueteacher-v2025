@@ -6,7 +6,7 @@ type ProjectGridProps = {
   projects: Project[];
 }
 
-const MediaContent = ({ media }: { media?: Project['media'] }) => {
+export const MediaContent = ({ media }: { media?: Project['media'] }) => {
   if (!media) return null;
 
   return (
