@@ -1,11 +1,12 @@
 import { useEffect, useRef } from "react";
 import profilePic from "/images/yongkiat.jpg";
 import youtubeIcon from "/images/youtube.png";
+import linkedinIcon from "/images/linkedin.png";
+import mediumIcon from "/images/medium.png";
+import githubIcon from "/images/github.png";
 import { motion } from "framer-motion";
 import { 
   Github, 
-  Linkedin, 
-  Youtube, 
   Mail,
   MessageSquare 
 } from "lucide-react";
@@ -19,7 +20,7 @@ import {
 
 type SocialLink = {
   href: string;
-  icon: React.ElementType;
+  icon: React.ElementType | (() => JSX.Element);
   bgColor: string;
   isExternal?: boolean;
   tooltip: string;
@@ -27,35 +28,51 @@ type SocialLink = {
 
 const socialLinks: SocialLink[] = [
   {
-    href: "https://linkedin.com",
-    bgColor: "bg-[#0077B5] ring-[#0077B5]",
-    icon: Linkedin,
-    isExternal: true,
-    tooltip: "Connect on LinkedIn"
-  },
-  {
-    href: "https://medium.com",
+    href: "https://medium.com/@yeoyongkiat",
     bgColor: "bg-black ring-black",
-    icon: MediumIcon,
+    icon: () => <img 
+      src={mediumIcon} 
+      alt="Medium" 
+      className="w-6 h-6 md:w-9 md:h-9"
+    />,
     isExternal: true,
     tooltip: "Read my articles"
   },
   {
-    href: "https://youtube.com",
-    bgColor: "bg-[#FF0000] ring-[#FF0000]",
-    icon: Youtube,
+    href: "https://linkedin.com/in/yongkiat",
+    bgColor: "bg-[#0A66C2] ring-[#0A66C2]",
+    icon: () => <img 
+      src={linkedinIcon} 
+      alt="LinkedIn" 
+      className="w-6 h-6 md:w-7 md:h-7"
+    />,
     isExternal: true,
-    tooltip: "Watch my videos"
+    tooltip: "Connect on LinkedIn"
   },
   {
-    href: "https://github.com",
-    bgColor: "bg-[#333] ring-[#333]",
-    icon: Github,
+    href: "https://github.com/yeoyongkiat",
+    bgColor: "bg-white ring-black",
+    icon: () => <img 
+      src={githubIcon} 
+      alt="GitHub" 
+      className="w-6 h-6 md:w-9 md:h-9"
+    />,
     isExternal: true,
     tooltip: "Check out my GitHub"
   },
   {
-    href: "mailto:your.email@example.com",
+    href: "https://youtube.com/@YeoYongKiat",
+    bgColor: "bg-[#FF0000] ring-[#FF0000]",
+    icon: () => <img 
+      src={youtubeIcon} 
+      alt="YouTube" 
+      className="w-6 h-6 md:w-9 md:h-9"
+    />,
+    isExternal: true,
+    tooltip: "Watch my videos!"
+  },
+  {
+    href: "mailto:yeoyongkiat@gmail.com",
     bgColor: "bg-black ring-black",
     icon: Mail,
     isExternal: true,
@@ -64,30 +81,37 @@ const socialLinks: SocialLink[] = [
 ];
 
 const SocialLinks = ({ isMobile = false }: { isMobile?: boolean }) => {
-  const baseClasses = "text-white rounded-full flex items-center justify-center hover:opacity-90";
-  const sizeClasses = isMobile ? "w-8 h-8" : "w-11 h-11";
-  const iconContainerClasses = isMobile ? "" : "shadow-lg ring-2 ring-offset-2 ring-offset-white";
+  const baseClasses = "rounded-full flex items-center justify-center hover:opacity-90";
+  const sizeClasses = isMobile ? "w-10 h-10" : "w-12 h-12";
+  const iconContainerClasses = isMobile ? "ring-1 ring-black" : "shadow-lg ring-2 ring-offset-2 ring-offset-white";
 
   return (
-    <div className={`flex gap-2 ${!isMobile && "gap-4 md:gap-6 lg:gap-8"}`}>
-      {socialLinks.map((link, index) => (
-        <TooltipProvider key={index}>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <a
-                href={link.href}
-                className={`${baseClasses} ${sizeClasses} ${link.bgColor} ${iconContainerClasses}`}
-                {...(link.isExternal && { target: "_blank", rel: "noopener noreferrer" })}
-              >
-                <link.icon className={`${isMobile ? 'w-4 h-4' : 'w-6 h-6'}`} />
-              </a>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>{link.tooltip}</p>
-            </TooltipContent>
-          </Tooltip>
-        </TooltipProvider>
-      ))}
+    <div className={`flex gap-2 ${!isMobile && "gap-3 md:gap-4"}`}>
+      {socialLinks.map((link, index) => {
+        const Icon = link.icon;
+        return (
+          <TooltipProvider key={index}>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <a
+                  href={link.href}
+                  className={`${baseClasses} ${sizeClasses} ${link.bgColor} ${iconContainerClasses} p-1`}
+                  {...(link.isExternal && { target: "_blank", rel: "noopener noreferrer" })}
+                >
+                  {typeof Icon === 'function' ? (
+                    <Icon />
+                  ) : (
+                    <Icon className={`${isMobile ? 'w-5 h-5' : 'w-6 h-6'} text-white`} />
+                  )}
+                </a>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>{link.tooltip}</p>
+              </TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        );
+      })}
     </div>
   );
 };

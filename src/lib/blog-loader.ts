@@ -15,7 +15,9 @@ const blogFiles = import.meta.glob([
   '../content/blog/*.md',
   '../content/blog/*.tsx',
   '/src/content/blog/*.md',
-  '/src/content/blog/*.tsx'
+  '/src/content/blog/*.tsx',
+  './src/content/blog/*.md',
+  './src/content/blog/*.tsx'
 ], { 
   eager: true,
   as: 'raw'
@@ -58,39 +60,50 @@ export async function loadBlogPosts(): Promise<BlogPost[]> {
 }
 
 export async function getAllBlogPosts(): Promise<BlogPost[]> {
-  console.log('Found blog files:', Object.keys(blogFiles));
+  const files = Object.keys(blogFiles);
+  console.log('Found blog files:', files);
+  console.log('Number of files found:', files.length);
 
   const posts = await Promise.all(
     Object.entries(blogFiles).map(async ([filepath, content]) => {
+      console.log('Processing file:', filepath);
       const slug = filepath.split('/').pop()?.replace(/\.(md|tsx)$/, '');
-      if (!slug) throw new Error(`Invalid filepath: ${filepath}`);
+      if (!slug) {
+        console.error(`Invalid filepath: ${filepath}`);
+        throw new Error(`Invalid filepath: ${filepath}`);
+      }
       
       try {
         if (filepath.endsWith('.tsx')) {
-          // Handle TSX component
+          console.log('Processing TSX file:', filepath);
           const meta = extractTsxMetadata(content as string);
           return {
             id: slug,
             slug,
-            url: `/blog/${slug}`,  // TSX components are always internal routes
+            url: `/blog/${slug}`,
             ...meta
           } as BlogPost;
         } else {
-          // Handle MD file as before
+          console.log('Processing MD file:', filepath);
           return await getBlogPost(slug, content as string);
         }
       } catch (error) {
         console.error(`Error processing ${filepath}:`, error);
-        throw error;
+        // Instead of throwing, return null and filter out later
+        return null;
       }
     })
   );
 
-  const sortedPosts = posts.sort((a, b) => 
+  // Filter out any null posts from errors
+  const validPosts = posts.filter((post): post is BlogPost => post !== null);
+  
+  const sortedPosts = validPosts.sort((a, b) => 
     new Date(b.date).getTime() - new Date(a.date).getTime()
   );
 
-  console.log('All posts loaded:', sortedPosts.map(p => p.title));
+  console.log('Successfully loaded posts:', sortedPosts.length);
+  console.log('Post titles:', sortedPosts.map(p => p.title));
   return sortedPosts;
 }
 
@@ -99,12 +112,17 @@ export async function getBlogPost(slug: string, content?: string): Promise<BlogP
   if (!content) {
     const possiblePaths = [
       `/src/content/blog/${slug}.md`,
-      `../content/blog/${slug}.md`
+      `../content/blog/${slug}.md`,
+      // Add more possible paths if needed
+      `src/content/blog/${slug}.md`
     ];
+    
+    console.log('Searching for content in paths:', possiblePaths);
     
     for (const path of possiblePaths) {
       if (blogFiles[path]) {
         content = blogFiles[path] as string;
+        console.log('Found content at path:', path);
         break;
       }
     }
@@ -112,34 +130,37 @@ export async function getBlogPost(slug: string, content?: string): Promise<BlogP
 
   if (!content) {
     console.error('Available files:', Object.keys(blogFiles));
+    console.error('Content not found for slug:', slug);
     throw new Error(`Blog post content not found: ${slug}`);
   }
 
   // Split frontmatter and content
   const parts = content.split('---\n');
   if (parts.length < 3) {
+    console.error('Invalid markdown format for:', slug);
+    console.error('Content:', content);
     throw new Error(`Invalid markdown format for ${slug}`);
   }
 
-  const frontmatter = parts[1]; // Skip empty first part
+  const frontmatter = parts[1];
   const markdown = parts.slice(2).join('---\n');
 
   // Parse frontmatter
   const meta = parseFrontmatter(frontmatter);
   console.log('Parsed metadata for:', slug, meta);
 
-  // Convert markdown to HTML (just the preview part)
+  // Convert markdown to HTML
   const htmlContent = marked(markdown);
 
   return {
     id: slug,
     slug,
-    title: meta.title,
-    date: meta.date,
-    category: meta.category,
+    title: meta.title || slug, // Provide fallback title
+    date: meta.date || new Date().toISOString(), // Provide fallback date
+    category: meta.category || 'Uncategorized', // Provide fallback category
     tags: meta.tags || [],
-    summary: meta.summary,
-    url: meta.url,  // Include the URL
+    summary: meta.summary || '', // Provide fallback summary
+    url: meta.url || `/blog/${slug}`, // Provide fallback URL
     content: htmlContent
   };
 }

@@ -9,7 +9,7 @@ export default function ProjectsPage() {
 
   return (
     <PageLayout
-      title="Work Pieces"
+      title="Somewhere to jot everything down"
       subtitle="Back to Home"
       description="My career felt like a blur until I started documenting the things I did. Not everything of course, else it would take many webpages to write them all down. But I focus on what I think are highlights in my work - the things that bring me joy and give me energy. Very often, these things tend to revolve around people, data analytics and story-telling. I hope you find some inspiration from what a simple teacher picked up over the course of his career."
       badge="Projects"

@@ -7,11 +7,18 @@ import { ArrowRight } from "lucide-react";
 interface BlogCardProps {
   post: BlogPost;
   index: number;
-  variant?: 'grid' | 'list';
+  variant?: 'grid' | 'featured';
 }
 
 export function BlogCard({ post, index, variant = 'grid' }: BlogCardProps) {
+  if (!post || !post.title) {
+    console.error('Invalid post data:', post);
+    return null;
+  }
+
   const isGrid = variant === 'grid';
+  const isOldFormat = post.url?.endsWith('.html');
+  const isFeatured = variant === 'featured';
 
   // Debug log
   console.log('Rendering BlogCard for:', post.title, 'with slug:', post.slug);
@@ -27,15 +34,25 @@ export function BlogCard({ post, index, variant = 'grid' }: BlogCardProps) {
   return (
     <LinkComponent
       {...linkProps}
-      className="block"
+      className="block relative"
     >
+      {/* 2022 Format Badge */}
+      {isOldFormat && (
+        <Badge
+          variant="outline"
+          className="absolute top-2 right-2 z-10 bg-white/80 backdrop-blur-sm"
+        >
+         ver. 2022
+        </Badge>
+      )}
+
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.4, delay: index * 0.1 }}
         viewport={{ once: true, margin: "0px 0px -50px 0px" }}
         className={`bg-white rounded-2xl shadow-lg hover:shadow-xl transition-shadow
-          ${isGrid ? 'p-8' : 'p-6'}`}
+          ${isFeatured ? 'p-8' : 'p-6'}`}
       >
         <div className="flex flex-col h-full">
           {/* Meta Information */}
@@ -46,13 +63,16 @@ export function BlogCard({ post, index, variant = 'grid' }: BlogCardProps) {
           </div>
           
           {/* Title and Summary */}
-          <h3 className={`font-semibold mb-3 ${isGrid ? 'text-xl' : 'text-2xl'} 
-            hover:text-[rgb(43,154,154)] transition-colors`}
+          <h3 className={`font-semibold mb-3 ${
+            isFeatured ? 'text-2xl md:text-3xl' : 'text-xl'
+          } hover:text-[rgb(43,154,154)] transition-colors`}
           >
             {post.title}
           </h3>
           
-          <p className="text-sm text-neutral-600 mb-4 flex-grow">
+          <p className={`text-neutral-600 mb-4 flex-grow ${
+            isFeatured ? 'text-base' : 'text-sm'
+          }`}>
             {post.summary}
           </p>
           
@@ -70,13 +90,11 @@ export function BlogCard({ post, index, variant = 'grid' }: BlogCardProps) {
               ))}
             </div>
             
-            {variant === 'grid' ? (
-              <div className="mt-4">
-                <span className="text-[rgb(43,154,154)] hover:underline inline-flex items-center gap-1">
-                  Read more <ArrowRight className="w-4 h-4" />
-                </span>
-              </div>
-            ) : null}
+            <div className="mt-4">
+              <span className="text-[rgb(43,154,154)] hover:underline inline-flex items-center gap-1">
+                Read more <ArrowRight className="w-4 h-4" />
+              </span>
+            </div>
           </div>
         </div>
       </motion.div>

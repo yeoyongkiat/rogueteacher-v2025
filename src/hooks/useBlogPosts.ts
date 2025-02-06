@@ -45,13 +45,9 @@ export function useBlogPosts({
     if (search) {
       const searchLower = search.toLowerCase();
       result = result.filter(post => 
-        // Search in title
         post.title.toLowerCase().includes(searchLower) ||
-        // Search in description/summary
         post.summary.toLowerCase().includes(searchLower) ||
-        // Search in category
         post.category.toLowerCase().includes(searchLower) ||
-        // Search in tags
         post.tags.some(tag => tag.toLowerCase().includes(searchLower))
       );
     }
@@ -64,10 +60,14 @@ export function useBlogPosts({
     // Sort
     result.sort((a, b) => {
       switch (sortBy) {
-        case 'date':
+        case 'date-desc':
           return new Date(b.date).getTime() - new Date(a.date).getTime();
-        case 'title':
+        case 'date-asc':
+          return new Date(a.date).getTime() - new Date(b.date).getTime();
+        case 'title-asc':
           return a.title.localeCompare(b.title);
+        case 'title-desc':
+          return b.title.localeCompare(a.title);
         default:
           return 0;
       }
@@ -77,11 +77,11 @@ export function useBlogPosts({
   }, [allPosts, search, category, sortBy]);
 
   // Calculate pagination
-  const totalPages = Math.ceil(filteredPosts.length / postsPerPage);
-  const paginatedPosts = filteredPosts.slice(
-    (page - 1) * postsPerPage,
-    page * postsPerPage
-  );
+  const totalPosts = filteredPosts.length;
+  const totalPages = Math.ceil(totalPosts / postsPerPage);
+  const startIndex = (page - 1) * postsPerPage;
+  const endIndex = startIndex + postsPerPage;
+  const paginatedPosts = filteredPosts.slice(startIndex, endIndex);
 
   // Get unique categories
   const categories = useMemo(() => {
@@ -93,7 +93,7 @@ export function useBlogPosts({
     posts: paginatedPosts,
     totalPages,
     categories,
-    totalPosts: filteredPosts.length,
-    loading
+    loading,
+    totalPosts
   };
 } 

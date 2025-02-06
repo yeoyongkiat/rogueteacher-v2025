@@ -1,8 +1,8 @@
 export const SITE_CONFIG = {
-  title: "Rogue Teacher",
-  description: "Writing helps me organize my thoughts. Here are some of my reflections on technology, education, and public service.",
-  author: "Your Name",
-  email: "your.email@example.com"
+  title: "RogueTeacher",
+  description: "Mostly musings, for me to stay sharp and an excuse to code. I write algorithms, or at least a meaningful app or visualisation to explain my thoughts.",
+  author: "Yeo Yong Kiat",
+  email: "yeoyongkiat@gmail.com"
 } as const;
 
 export const BLOG_CONFIG = {
@@ -10,7 +10,7 @@ export const BLOG_CONFIG = {
   defaultView: 'grid' as const,
   defaultSort: 'date-desc' as const,
   sections: {
-    title: "Thoughts & Insights",
+    title: "Writing keeps ideas alive",
     description: SITE_CONFIG.description,
   }
 } as const;
